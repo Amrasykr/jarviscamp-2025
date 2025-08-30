@@ -16,8 +16,3 @@ Route::get('/', function () {
  * Menggunakan method GET dan mengembalikan view 'home'
  * Pastikan view 'home' ada di resources/views/home.blade.ph
  */
-
-Route::get('/home', function () {
-    return view('home');
-});
-
