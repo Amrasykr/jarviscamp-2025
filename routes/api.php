@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\LoanController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,6 +25,14 @@ Route::get('/', function() {
 
 // item routes
 Route::get('/items', [ItemController::class, 'index']);
+Route::get('/items/{id}', [ItemController::class, 'show']);
 Route::post('/items', [ItemController::class, 'store']);
 Route::put('/items/{id}', [ItemController::class, 'update']);
 Route::delete('/items/{id}', [ItemController::class, 'destroy']);
+
+// item Category routes
+Route::get('/categories', [CategoryController::class, 'index']);
+Route::post('/categories', [CategoryController::class, 'store']);
+Route::put('/categories/{id}', [CategoryController::class, 'update']);
+Route::delete('/categories/{id}', [CategoryController::class, 'destroy']);
+

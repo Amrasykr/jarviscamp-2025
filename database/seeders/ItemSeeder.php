@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
+use App\Models\Category;
 use App\Models\Item;
+use Illuminate\Database\Seeder;
 
 class ItemSeeder extends Seeder
 {
@@ -12,7 +13,39 @@ class ItemSeeder extends Seeder
      */
     public function run(): void
     {
-        // insert 5 item data to database
-        Item::factory()->count(5)->create();
+        // Ambil kategori berdasarkan nama
+        $electronics = Category::where('name', 'Electronics')->first();
+        $furniture = Category::where('name', 'Furniture')->first();
+
+        // Pastikan category ada
+        if ($electronics && $furniture) {
+            Item::create([
+                'name' => 'Smartphone',
+                'description' => 'Latest model with high performance',
+                'status' => 'available',
+                'category_id' => $electronics->id,
+            ]);
+
+            Item::create([
+                'name' => 'Laptop',
+                'description' => 'Lightweight and powerful',
+                'status' => 'available',
+                'category_id' => $electronics->id,
+            ]);
+
+            Item::create([
+                'name' => 'Office Chair',
+                'description' => 'Ergonomic and comfortable',
+                'status' => 'unavailable',
+                'category_id' => $furniture->id,
+            ]);
+
+            Item::create([
+                'name' => 'Desk',
+                'description' => 'Wooden office desk',
+                'status' => 'available',
+                'category_id' => $furniture->id,
+            ]);
+        }
     }
 }

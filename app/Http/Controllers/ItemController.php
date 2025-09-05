@@ -8,93 +8,105 @@ use Illuminate\Http\Request;
 class ItemController extends Controller
 {
     public function index() {
-        // get all data from model with elequent orm
-        $item = Item::all();
+        // Mengambil semua item BESERTA kategorinya (Eager Loading)
+        $items = Item::with('category')->get();
 
-        if ($item->isEmpty()) {
+        if ($items->isEmpty()) {
             return response()->json([
                 'message' => 'No items found',
                 'data' => []
             ], 404);
         }
 
-        // return item as a response with message and status code
         return response()->json([
             'message' => 'Items retrieved successfully',
-            'data' => $item
+            'data' => $items
         ], 200);
-
     }
 
     public function store(Request $request) {
-
-        // validate request 
-        $item = $request->validate([
+        // Update validasi untuk include category_id
+        $validatedData = $request->validate([
             'name' => 'required|string',
             'description' => 'required|string',
-            'status' => 'required|in:available,unavailable'
+            'status' => 'required|in:available,unavailable',
+            'category_id' => 'required|exists:categories,id' // Validasi foreign key
         ],
-        [   
-            'status.in' => 'The status must be either available or unavailable.'
+        [
+            'status.in' => 'The status must be either available or unavailable.',
+            'category_id.exists' => 'The selected category does not exist.'
         ]);
 
-        // store all request data to database with elequent orm
-        $item = Item::create($item);
+        $item = Item::create($validatedData);
 
-        // return created item as a response with message and status code
+        // Load relasi category setelah create
+        $item->load('category');
+
         return response()->json([
             'message' => 'Item created successfully',
             'data' => $item
         ], 201);
     }
 
-    
+    public function show($id) {
+        // Mengambil satu item beserta kategorinya
+        $item = Item::with('category')->find($id);
 
-    public function update(Request $request, $id) {
-        // find item data by id requested to be update
-        $item = Item::find($id);
-
-        // send response if selected item no found
         if (!$item) {
             return response()->json([
                 'message' => 'Item not found',
             ], 404);
         }
 
-        // validate requeust
+        return response()->json([
+            'message' => 'Item retrieved successfully',
+            'data' => $item
+        ], 200);
+    }
+
+    public function update(Request $request, $id) {
+        $item = Item::find($id);
+
+        if (!$item) {
+            return response()->json([
+                'message' => 'Item not found',
+            ], 404);
+        }
+
+        // Update validasi untuk include category_id
         $request->validate([
             'name' => 'sometimes|required|string',
             'description' => 'sometimes|required|string',
-            'status' => 'sometimes|required|in:available,unavailable'
+            'status' => 'sometimes|required|in:available,unavailable',
+            'category_id' => 'sometimes|required|exists:categories,id'
         ],
-        [   
-            'status.in' => 'The status must be either available or unavailable.'
+        [
+            'status.in' => 'The status must be either available or unavailable.',
+            'category_id.exists' => 'The selected category does not exist.'
         ]);
 
         $item->update($request->all());
 
-        // return updated item as a response with message and status code
+        // Load relasi category setelah update
+        $item->load('category');
+
         return response()->json([
             'message' => 'Item updated successfully',
             'data' => $item
-        ], 201);
+        ], 200);
     }
 
     public function destroy($id) {
-        // find item data by id requested to be delete
-         $item = Item::find($id);
+        $item = Item::find($id);
 
-        // send response if selected item no found
         if (!$item) {
             return response()->json([
                 'message' => 'Item not found',
             ], 404);
         }
 
-        // delete item data 
         $item->delete();
 
-        // return response with message and status code
         return response()->json([
             'message' => 'Item deleted successfully',
         ], 200);
