@@ -22,7 +22,5 @@ class CategorySeeder extends Seeder
             'name' => 'Furniture',
             'description' => 'office furniture'
         ]);
-
-        
     }
 }

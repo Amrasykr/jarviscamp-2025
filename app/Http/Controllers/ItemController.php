@@ -7,8 +7,9 @@ use Illuminate\Http\Request;
 
 class ItemController extends Controller
 {
+
     public function index() {
-        // Mengambil semua item BESERTA kategorinya (Eager Loading)
+      
         $items = Item::with('category')->get();
 
         if ($items->isEmpty()) {
@@ -25,12 +26,12 @@ class ItemController extends Controller
     }
 
     public function store(Request $request) {
-        // Update validasi untuk include category_id
+
         $validatedData = $request->validate([
             'name' => 'required|string',
             'description' => 'required|string',
             'status' => 'required|in:available,unavailable',
-            'category_id' => 'required|exists:categories,id' // Validasi foreign key
+            'category_id' => 'required|exists:categories,id' 
         ],
         [
             'status.in' => 'The status must be either available or unavailable.',
@@ -39,7 +40,6 @@ class ItemController extends Controller
 
         $item = Item::create($validatedData);
 
-        // Load relasi category setelah create
         $item->load('category');
 
         return response()->json([
@@ -49,7 +49,6 @@ class ItemController extends Controller
     }
 
     public function show($id) {
-        // Mengambil satu item beserta kategorinya
         $item = Item::with('category')->find($id);
 
         if (!$item) {
@@ -73,7 +72,6 @@ class ItemController extends Controller
             ], 404);
         }
 
-        // Update validasi untuk include category_id
         $request->validate([
             'name' => 'sometimes|required|string',
             'description' => 'sometimes|required|string',
@@ -87,8 +85,7 @@ class ItemController extends Controller
 
         $item->update($request->all());
 
-        // Load relasi category setelah update
-        $item->load('category');
+        // $item->load('category');
 
         return response()->json([
             'message' => 'Item updated successfully',

@@ -10,10 +10,8 @@ class Category extends Model
 
     protected $fillable = [
         'name',
-        'description',
-        
+        'description', 
     ];
-
 
     /**
      * Relasi hasMany ke Item

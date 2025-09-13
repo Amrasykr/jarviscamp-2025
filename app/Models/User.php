@@ -45,4 +45,20 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Loans yang dipinjam oleh user ini
+     */
+    public function borrowedLoans()
+    {
+        return $this->hasMany(Loan::class, 'borrower_id');
+    }
+
+    /**
+     * Loans yang disetujui oleh user ini
+     */
+    public function approvedLoans()
+    {
+        return $this->hasMany(Loan::class, 'approver_id');
+    }
 }

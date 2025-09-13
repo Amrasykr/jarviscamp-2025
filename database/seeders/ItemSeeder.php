@@ -27,20 +27,6 @@ class ItemSeeder extends Seeder
             ]);
 
             Item::create([
-                'name' => 'Laptop',
-                'description' => 'Lightweight and powerful',
-                'status' => 'available',
-                'category_id' => $electronics->id,
-            ]);
-
-            Item::create([
-                'name' => 'Office Chair',
-                'description' => 'Ergonomic and comfortable',
-                'status' => 'unavailable',
-                'category_id' => $furniture->id,
-            ]);
-
-            Item::create([
                 'name' => 'Desk',
                 'description' => 'Wooden office desk',
                 'status' => 'available',

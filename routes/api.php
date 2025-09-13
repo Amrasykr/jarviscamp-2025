@@ -36,3 +36,8 @@ Route::post('/categories', [CategoryController::class, 'store']);
 Route::put('/categories/{id}', [CategoryController::class, 'update']);
 Route::delete('/categories/{id}', [CategoryController::class, 'destroy']);
 
+// Loan routes
+Route::get('/loans', [LoanController::class, 'index']);
+Route::post('/loans', [LoanController::class, 'store']);
+Route::patch('/loans/{id}/approve', [LoanController::class, 'approve']);
+Route::patch('/loans/{id}/return', [LoanController::class, 'return']);
