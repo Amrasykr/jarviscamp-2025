@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\LoanController;
@@ -23,21 +24,34 @@ Route::get('/', function() {
 });
 
 
-// item routes
-Route::get('/items', [ItemController::class, 'index']);
-Route::get('/items/{id}', [ItemController::class, 'show']);
-Route::post('/items', [ItemController::class, 'store']);
-Route::put('/items/{id}', [ItemController::class, 'update']);
-Route::delete('/items/{id}', [ItemController::class, 'destroy']);
+// Auth routes
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
 
-// item Category routes
-Route::get('/categories', [CategoryController::class, 'index']);
-Route::post('/categories', [CategoryController::class, 'store']);
-Route::put('/categories/{id}', [CategoryController::class, 'update']);
-Route::delete('/categories/{id}', [CategoryController::class, 'destroy']);
 
-// Loan routes
-Route::get('/loans', [LoanController::class, 'index']);
-Route::post('/loans', [LoanController::class, 'store']);
-Route::patch('/loans/{id}/approve', [LoanController::class, 'approve']);
-Route::patch('/loans/{id}/return', [LoanController::class, 'return']);
+Route::middleware('auth:sanctum')->group(function () {
+
+    Route::middleware('role:karyawan')->group(function () {
+        Route::get('/items', [ItemController::class, 'index']);
+        Route::post('/loans', [LoanController::class, 'store']);
+        Route::patch('/loans/{id}/return', [LoanController::class, 'return']);
+    });
+
+    Route::middleware('role:admin')->group(function () {
+        Route::get('/loans', [LoanController::class, 'index']);
+        Route::patch('/loans/{id}/approve', [LoanController::class, 'approve']);
+
+        Route::get('/categories', [CategoryController::class, 'index']);
+        Route::post('/categories', [CategoryController::class, 'store']);
+        Route::put('/categories/{id}', [CategoryController::class, 'update']);
+        Route::delete('/categories/{id}', [CategoryController::class, 'destroy']);
+
+        Route::get('/items/{id}', [ItemController::class, 'show']);
+        Route::post('/items', [ItemController::class, 'store']);
+        Route::put('/items/{id}', [ItemController::class, 'update']);
+        Route::delete('/items/{id}', [ItemController::class, 'destroy']);
+    });
+});
+
+
+
